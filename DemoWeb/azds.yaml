@@ -25,12 +25,12 @@ install:
       pullPolicy: Never
     ingress:
       annotations:
-        kubernetes.io/ingress.class: traefik-azds
+        kubernetes.io/ingress.class: traefik
       hosts:
       # This expands to form the service's public URL: [space.s.][rootSpace.]demoweb.<random suffix>.<region>.azds.io
       # Customize the public URL by changing the 'demoweb' text between the $(rootSpacePrefix) and $(hostSuffix) tokens
       # For more information see https://aka.ms/devspaces/routing
-      - $(spacePrefix)$(rootSpacePrefix)demoweb$(hostSuffix)
+      - $(spacePrefix)$(rootSpacePrefix)demoweb.demok8s.aligala.net
 configurations:
   develop:
     build:
