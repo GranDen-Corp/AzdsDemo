@@ -25,6 +25,20 @@ namespace DemoWeb
         {
             services.AddControllersWithViews()
                     .AddRazorRuntimeCompilation();
+
+            if (IsRunningOnK8s())
+            {
+                services.AddHttpsRedirection(opt => opt.HttpsPort = 443);
+                services.Configure<ForwardedHeadersOptions>(options =>
+                {
+                    options.ForwardedHeaders =
+                        Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor |
+                        Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto;
+
+                    options.KnownNetworks.Clear();
+                    options.KnownProxies.Clear();
+                });
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,6 +54,12 @@ namespace DemoWeb
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            if (IsRunningOnK8s())
+            {
+                app.UseForwardedHeaders();
+            }
+            
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -53,6 +73,24 @@ namespace DemoWeb
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private static bool IsRunningOnK8s()
+        {
+            return IsRunningInContainer() && InK8SPods();
+        }
+
+        private static bool IsRunningInContainer()
+        {
+            var environmentVariable = Environment.GetEnvironmentVariable(@"DOTNET_RUNNING_IN_CONTAINER");
+
+            return environmentVariable != null && bool.Parse(environmentVariable);
+        }
+
+        private static bool InK8SPods()
+        {
+            var environmentVariable = Environment.GetEnvironmentVariable(@"KUBERNETES_SERVICE_HOST");
+            return !string.IsNullOrEmpty(environmentVariable);
         }
     }
 }
