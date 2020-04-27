@@ -1,0 +1,27 @@
+## Create AKS cluster
+## Remeber to enable Helm3 preview feature: https://docs.microsoft.com/en-us/azure/dev-spaces/how-to/helm-3
+## Before invoke the `az aks create ...` command.
+az aks create -g MyResourceGroup -n MyAKS --location sourtheastasia --generate-ssh-keys
+
+## Upgrade both the AKS service and Node pools to 1.16.7
+
+
+## Custom URL
+helm install traefik stable/traefik --namespace traefik --set kubernetes.ingressClass=traefik --set rbac.enabled=true --set fullnameOverride=customtraefik --set kubernetes.ingressEndpoint.useDefaultPublishedService=true
+
+## Setup Let's Encrypt using cert-manager
+kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.14.2/cert-manager.crds.yaml --namespace traefik
+
+kubectl label namespace traefik certmanager.k8s.io/disable-validation=true
+helm repo add jetstack https://charts.jetstack.io
+helm repo update
+helm install cert-manager --namespace traefik --version v0.14.2 jetstack/cert-manager --set ingressShim.defaultIssuerName=letsencrypt --set ingressShim.defaultIssuerKind=ClusterIssuer
+
+kubectl apply -f letsencrypt-clusterissuer.yaml --namespace traefik
+
+kubectl delete ClusterRole traefik
+kubectl delete ClusterRoleBinding traefik
+helm upgrade traefik stable/traefik --namespace traefik --set kubernetes.ingressClass=traefik --set rbac.enabled=true --set kubernetes.ingressEndpoint.useDefaultPublishedService=true --version 1.85.0 --set ssl.enabled=true --set ssl.enforced=true --set ssl.permanentRedirect=true
+
+## Verify New IP
+kubectl get svc -n traefik
