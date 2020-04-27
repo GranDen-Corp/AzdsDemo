@@ -7,7 +7,7 @@ az aks create -g MyResourceGroup -n MyAKS --location sourtheastasia --generate-s
 
 
 ## Custom URL
-helm install traefik stable/traefik --namespace traefik --set kubernetes.ingressClass=traefik --set rbac.enabled=true --set fullnameOverride=customtraefik --set kubernetes.ingressEndpoint.useDefaultPublishedService=true
+helm install traefik stable/traefik --namespace traefik --set kubernetes.ingressClass=traefik --set rbac.enabled=true --set fullnameOverride=traefik --set kubernetes.ingressEndpoint.useDefaultPublishedService=true
 
 ## Setup Let's Encrypt using cert-manager
 kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.14.2/cert-manager.crds.yaml --namespace traefik
