@@ -142,3 +142,6 @@ https://docs.microsoft.com/en-us/azure/dev-spaces/how-to/ingress-https-traefik
     Below is the screen snapshot after finish above steps:   
     ![Setup Traefik service with Let's Encrypt SSL certificate](./img/config_cert-manager.png)
     **Note**: the External IP address may be changed after `helm upgrade traefik...` instruction, so be sure to check IP address again and update the DNS A record in your DNS management service accordingly.
+
+After done all above, besure to modify `azds.yml` config file inside the project folder to reflect the change:   
+![Modify azds.yml for Custom Domain & HTTPS](./img/Update_azds_yml_for_custom_domain.png)
