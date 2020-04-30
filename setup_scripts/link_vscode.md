@@ -14,7 +14,10 @@ https://docs.microsoft.com/en-us/azure/dev-spaces/get-started-netcore
 
 1. Open project folder using Visual Studio Code, It should have a prompt to create some configuration files & Dockerfiles for running on Azure Dev Spaces:
     ![VSCode prompt create Azure Dev Space config files](./img/VSCode_prompt_enable.png)
-2. Click Yes, and it should be able to run debug session in Visual Studio Code:   
+2. Click **Yes**, associated configuration in `task.json` & `launch.json` file which are inside `.vscode` folder should be generated.
+3. Be sure to modify `azds.yml` file to match the custom domain name and HTTPS SSL certificate if the Azure Dev Space has config [that](./service_create.md):   
+    ![Modify azds.yml for Custom Domain & HTTPS](./img/Update_azds_yml_for_custom_domain.png)
+4. Switch to the Debug tab, it should be able to run debug session in Visual Studio Code:   
     ![VSCode Azure Dev Space debug](./img/VSCode_debug_dev_spaces.png)
     
 ## Note:

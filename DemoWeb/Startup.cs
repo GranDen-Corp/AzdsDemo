@@ -26,6 +26,8 @@ namespace DemoWeb
             services.AddControllersWithViews()
                     .AddRazorRuntimeCompilation();
 
+            //Note: we need to do some detection to know if it is necessary to do some configuration to prevent http => https redirect error,
+            //See: https://github.com/GranDen-Corp/AzdsDemo/blob/master/DemoWeb/Startup.cs
             if (IsRunningOnK8s())
             {
                 services.AddHttpsRedirection(opt => opt.HttpsPort = 443);
